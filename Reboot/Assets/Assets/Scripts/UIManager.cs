@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -5,6 +6,23 @@ using UnityEngine;
 
 public class UIManager : MonoBehaviour
 {
+    public int startScore = 1000;
+    private float score;
+    public float Score
+    {
+        get
+        {
+            return score;
+        }
+        set
+        {
+            score += value;
+        }
+    }
+    [SerializeField]
+    private TMP_Text ScoreText;
+    [SerializeField]
+    private TMP_Text Meters;
     [SerializeField]
     private TMP_Text TimerText;
     [SerializeField]
@@ -15,6 +33,8 @@ public class UIManager : MonoBehaviour
     private float startYear;
     [SerializeField]
     private float timeSpeed;
+    private PlayerMeters playerMeters;
+    
 
     private float wakeUpTime = 6;
     public float WakeUpTime{
@@ -40,8 +60,25 @@ public class UIManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
         timer = 0;
+        playerMeters = FindObjectOfType<PlayerMeters>();
         SetTimer();
+        SetMeters();
+        ScoreText.text = "Score : " + (int)startScore;
+        score = startScore;
+        score += GameManager.Instance.SavedScore;
+    }
+
+    private void SetScore()
+    {
+        score -= Time.deltaTime;
+        ScoreText.text = "Score : " + (int)score;
+    }
+
+    private void SetMeters()
+    {
+        Meters.text = "Blue : " + (int)playerMeters.BlueMeter + "\nGreen : " + (int)playerMeters.GreenMeter;
     }
 
     // Update is called once per frame
@@ -65,6 +102,8 @@ public class UIManager : MonoBehaviour
             startMonth++;
         }
         SetTimer();
+        SetMeters();
+        SetScore();
     }
 
 
